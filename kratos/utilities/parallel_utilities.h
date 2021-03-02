@@ -94,7 +94,7 @@ private:
     ///@name Private Access
     ///@{
 
-    static int& GetNumberOfThreads();
+    static int GetNumberOfThreads();
 
     ///@}
 }; // Class ParallelUtilities

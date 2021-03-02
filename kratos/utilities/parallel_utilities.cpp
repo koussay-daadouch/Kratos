@@ -41,7 +41,7 @@ void ParallelUtilities::SetNumThreads(const int NumThreads)
 
     const int num_procs = GetNumProcs();
     KRATOS_WARNING_IF("ParallelUtilities", NumThreads > num_procs) << "The number of requested threads (" << NumThreads << ") exceeds the number of available threads (" << num_procs << ")!" << std::endl;
-    GetNumberOfThreads() = NumThreads;
+    // GetNumberOfThreads() = NumThreads;
 
 #ifdef KRATOS_SMP_OPENMP
     // external libraries included in Kratos still use OpenMP (such as AMGCL)
@@ -106,20 +106,9 @@ int ParallelUtilities::InitializeNumberOfThreads()
 #endif
 }
 
-int& ParallelUtilities::GetNumberOfThreads()
+int ParallelUtilities::GetNumberOfThreads()
 {
-    if (!mspNumThreads) {
-        LockObject lock;
-        lock.SetLock();
-        if (!mspNumThreads) {
-            static int num_threads;
-            num_threads = InitializeNumberOfThreads();
-            mspNumThreads = &num_threads;
-        }
-        lock.UnSetLock();
-    }
-
-    return *mspNumThreads;
+    return omp_get_num_threads();
 }
 
 int* ParallelUtilities::mspNumThreads = nullptr;
