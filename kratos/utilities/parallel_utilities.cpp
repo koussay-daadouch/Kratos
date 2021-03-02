@@ -13,7 +13,6 @@
 //
 
 // System includes
-#include <algorithm>
 #include <cstdlib> // for std::getenv
 
 // External includes
@@ -57,7 +56,7 @@ int ParallelUtilities::GetNumProcs()
 
 #elif defined(KRATOS_SMP_CXX11)
     // NOTE: std::thread::hardware_concurrency() can return 0 in some systems!
-    int num_procs = std::thread::hardware_concurrency();
+    unsigned num_procs = std::thread::hardware_concurrency();
 
     KRATOS_WARNING_IF("ParallelUtilities", num_procs == 0) << "The number of processors cannot be determined correctly on this machine. Please check your setup carefully!" << std::endl;
 

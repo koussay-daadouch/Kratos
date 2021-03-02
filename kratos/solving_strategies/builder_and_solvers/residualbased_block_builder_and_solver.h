@@ -1607,7 +1607,7 @@ protected:
                 lock_array[ids[i]].UnSetLock();
             }
         }
-
+             
         if (rModelPart.MasterSlaveConstraints().size() != 0) {
             Element::EquationIdVectorType master_ids(3, 0);
             Element::EquationIdVectorType slave_ids(3, 0);
