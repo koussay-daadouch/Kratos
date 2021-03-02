@@ -16,38 +16,27 @@ class PeriodicTurbulenceModellingTestCase(UnitTest.TestCase):
         if (IsDistributedRun()):
             self.skipTest("Skipping since Periodic tests are not designed to be run in MPI.")
 
-    def testVMSAfcTkeSteady(self):
+    def testAfcTkeSteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "algebraic_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSAfcVelocitySteady(self):
+    def testAfcVelocitySteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "algebraic_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "velocity_based"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSRfcTkeSteady(self):
+    def testRfcTkeSteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSRfcVelocitySteady(self):
+    def testRfcVelocitySteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "velocity_based"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
-
-        self._runTest()
-
-    def testQSVMSRfcVelocitySteady(self):
-        self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
-        self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "velocity_based"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "qsvms"
 
         self._runTest()
 

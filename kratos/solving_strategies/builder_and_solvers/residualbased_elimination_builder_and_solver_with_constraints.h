@@ -24,7 +24,6 @@
 #include "utilities/sparse_matrix_multiplication_utility.h"
 #include "utilities/constraint_utilities.h"
 #include "input_output/logger.h"
-#include "utilities/builtin_timer.h"
 
 namespace Kratos
 {
@@ -551,22 +550,21 @@ protected:
         "Before the solution of the system" << "\nSystem Matrix = " << rA << "\nUnknowns vector = " << rDx << "\nRHS vector = " << rb << std::endl;
 
         // We solve the system of equations
-        const auto timer = BuiltinTimer();
-        const double start_solve = timer.ElapsedSeconds();
+        const double start_solve = OpenMPUtils::GetCurrentTime();
         Timer::Start("Solve");
         SystemSolveWithPhysics(rA, rDx, rb, rModelPart);
 
         Timer::Stop("Solve");
-        const double stop_solve = timer.ElapsedSeconds();
+        const double stop_solve = OpenMPUtils::GetCurrentTime();
 
         // We compute the effective constant vector
         ComputeEffectiveConstant(pScheme, rModelPart, rDx);
 
         // We reconstruct the Unknowns vector and the residual
-        const double start_reconstruct_slaves = timer.ElapsedSeconds();
+        const double start_reconstruct_slaves = OpenMPUtils::GetCurrentTime();
         ReconstructSlaveSolutionAfterSolve(pScheme, rModelPart, rA, rDx, rb);
 
-        const double stop_reconstruct_slaves = timer.ElapsedSeconds();
+        const double stop_reconstruct_slaves = OpenMPUtils::GetCurrentTime();
         KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", (this->GetEchoLevel() >= 1 && rModelPart.GetCommunicator().MyPID() == 0)) << "Reconstruct slaves time: " << stop_reconstruct_slaves - start_reconstruct_slaves << std::endl;
 
         // Some verbosity
@@ -1158,7 +1156,7 @@ protected:
             BuildWithoutConstraints(pScheme, rModelPart, rA, rb);
 
         // Assemble the constraints
-        const auto timer = BuiltinTimer();
+        const double start_build = OpenMPUtils::GetCurrentTime();
 
         // We get the global T matrix
         const TSystemMatrixType& rTMatrix = *mpTMatrix;
@@ -1208,9 +1206,10 @@ protected:
         auxiliar_A_matrix.resize(0, 0, false);
         T_transpose_matrix.resize(0, 0, false);
 
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", this->GetEchoLevel() >= 1) << "Constraint relation build time and multiplication: " << timer.ElapsedSeconds() << std::endl;
+        const double stop_build = OpenMPUtils::GetCurrentTime();
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", (this->GetEchoLevel() >= 1 && rModelPart.GetCommunicator().MyPID() == 0)) << "Constraint relation build time and multiplication: " << stop_build - start_build << std::endl;
 
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", this->GetEchoLevel() > 2) << "Finished parallel building with constraints" << std::endl;
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", (this->GetEchoLevel() > 2 && rModelPart.GetCommunicator().MyPID() == 0)) << "Finished parallel building with constraints" << std::endl;
 
         KRATOS_CATCH("")
     }
@@ -1231,7 +1230,7 @@ protected:
         KRATOS_TRY
 
         // Assemble the constraints
-        const auto timer = BuiltinTimer();
+        const double start_build = OpenMPUtils::GetCurrentTime();
 
         // We get the global T matrix
         const TSystemMatrixType& rTMatrix = *mpTMatrix;
@@ -1274,9 +1273,10 @@ protected:
         // Final multiplication
         TSparseSpace::Mult(T_transpose_matrix, rb_copy, rb);
 
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", this->GetEchoLevel() >= 1) << "Constraint relation build time and multiplication: " << timer.ElapsedSeconds() << std::endl;
+        const double stop_build = OpenMPUtils::GetCurrentTime();
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", (this->GetEchoLevel() >= 1 && rModelPart.GetCommunicator().MyPID() == 0)) << "Constraint relation build time and multiplication: " << stop_build - start_build << std::endl;
 
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", this->GetEchoLevel() > 2) << "Finished parallel building with constraints" << std::endl;
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolverWithConstraints", (this->GetEchoLevel() > 2 && rModelPart.GetCommunicator().MyPID() == 0)) << "Finished parallel building with constraints" << std::endl;
 
         KRATOS_CATCH("")
     }

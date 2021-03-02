@@ -18,15 +18,18 @@
 /* System includes */
 #include <set>
 
-/* External includes */
-#ifdef KRATOS_SMP_OPENMP
+#ifdef _OPENMP
 #include <omp.h>
 #endif
+#include "utilities/openmp_utils.h"
+
+
+/* External includes */
+
 
 /* Project includes */
 #include "includes/define.h"
 #include "solving_strategies/builder_and_solvers/builder_and_solver.h"
-#include "utilities/builtin_timer.h"
 
 namespace Kratos
 {
@@ -208,8 +211,8 @@ public:
         TSparseSpace::SetToZero(*(BaseType::mpReactionsVector));
 
         //create a partition of the element array
-        int number_of_threads = ParallelUtilities::GetNumThreads();
-        const auto timer = BuiltinTimer();
+        int number_of_threads = OpenMPUtils::GetNumThreads();
+        double start_prod = OpenMPUtils::GetCurrentTime();
 
 #ifdef _OPENMP
 
@@ -337,8 +340,11 @@ public:
             }
         }
 
-        if (this->GetEchoLevel() > 0) {
-            std::cout << "parallel building time: " << timer.ElapsedSeconds() << std::endl;
+
+        if (this->GetEchoLevel() > 0)
+        {
+            double stop_prod = OpenMPUtils::GetCurrentTime();
+            std::cout << "parallel building time: " << stop_prod - start_prod << std::endl;
         }
 
 #ifdef _OPENMP
@@ -581,7 +587,7 @@ protected:
         std::vector< std::vector<std::size_t> > index_list(BaseType::mEquationSystemSize);
         // KRATOS_WATCH("inside PArallel Construct Graph")
 
-        int number_of_threads = ParallelUtilities::GetNumThreads();
+        int number_of_threads = OpenMPUtils::GetNumThreads();
 
         unsigned int pos_x = (mActiveNodes.begin())->GetDofPosition(mrVar_x);
         unsigned int pos_y = (mActiveNodes.begin())->GetDofPosition(mrVar_y);
@@ -829,12 +835,12 @@ protected:
         //getting the array of the conditions
         ConditionsArrayType& ConditionsArray = r_model_part.Conditions();
 
-        int number_of_threads = ParallelUtilities::GetNumThreads();
+        int number_of_threads = OpenMPUtils::GetNumThreads();
 
         vector<unsigned int> element_partition;
         CreatePartition(number_of_threads, pElements.size(), element_partition);
 
-        const auto timer = BuiltinTimer();
+        double start_prod = OpenMPUtils::GetCurrentTime();
 
         unsigned int pos = (r_model_part.Nodes().begin())->GetDofPosition(rLocalVar);
 
@@ -851,6 +857,9 @@ protected:
             const ProcessInfo& CurrentProcessInfo = r_model_part.GetProcessInfo();
             typename ElementsArrayType::ptr_iterator it_begin = pElements.ptr_begin() + element_partition[k];
             typename ElementsArrayType::ptr_iterator it_end = pElements.ptr_begin() + element_partition[k + 1];
+
+
+
 
             // assemble all elements
             for (typename ElementsArrayType::ptr_iterator it = it_begin; it != it_end; ++it)
@@ -923,8 +932,10 @@ protected:
             }
         }
 
-        if (this->GetEchoLevel() > 0) {
-            std::cout << "parallel building time: " << timer.ElapsedSeconds() << std::endl;
+        if (this->GetEchoLevel() > 0)
+        {
+            double stop_prod = OpenMPUtils::GetCurrentTime();
+            std::cout << "parallel building time: " << stop_prod - start_prod << std::endl;
         }
 
         KRATOS_CATCH("")

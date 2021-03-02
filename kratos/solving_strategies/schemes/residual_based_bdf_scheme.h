@@ -126,7 +126,7 @@ public:
          mpBDFUtility(Kratos::make_unique<TimeDiscretization::BDF>(Order))
     {
         // Allocate auxiliary memory
-        const std::size_t num_threads = ParallelUtilities::GetNumThreads();
+        const std::size_t num_threads = OpenMPUtils::GetNumThreads();
 
         mVector.dotun0.resize(num_threads);
         mVector.dot2un0.resize(num_threads);

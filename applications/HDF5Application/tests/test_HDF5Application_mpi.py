@@ -1,9 +1,3 @@
-# Importing the Kratos Library
-import KratosMultiphysics as KM
-
-if not KM.IsDistributedRun():
-    raise Exception("This test script can only be executed in MPI!")
-
 import KratosMultiphysics.KratosUnittest as KratosUnittest
 
 from test_hdf5_model_part_io_mpi import TestCase as TestHDF5ModelPartIO
@@ -23,6 +17,10 @@ def AssembleTestSuites():
 
     allSuite = suites['mpi_all']
     allSuite.addTests([nightSuite]) # already contains the smallSuite
+
+    # temporary until mpi-testing is properly implemented
+    auxallSuite = suites['all']
+    auxallSuite.addTests(allSuite)
 
     return suites
 

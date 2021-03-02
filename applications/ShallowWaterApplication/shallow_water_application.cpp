@@ -39,6 +39,8 @@ namespace Kratos
 
         mShallowWater2D3N(0, Element::GeometryType::Pointer(new Triangle2D3<Node<3>>(Element::GeometryType::PointsArrayType(3)))),
 
+        mMonotonicElement2D3N(0, Element::GeometryType::Pointer(new Triangle2D3<Node<3>>(Element::GeometryType::PointsArrayType(3)))),
+
         mNothingCondition2D2N( 0, Element::GeometryType::Pointer( new Line2D2< Node<3> >( Element::GeometryType::PointsArrayType (2) ) ) )
     {}
 
@@ -66,6 +68,7 @@ namespace Kratos
 
         // Auxiliary variables
         KRATOS_REGISTER_VARIABLE(SHOCK_STABILIZATION_FACTOR)
+        KRATOS_REGISTER_VARIABLE(EQUIVALENT_MANNING)
         KRATOS_REGISTER_VARIABLE(DRY_HEIGHT)
         KRATOS_REGISTER_VARIABLE(RELATIVE_DRY_HEIGHT)
         KRATOS_REGISTER_VARIABLE(DRY_DISCHARGE_PENALTY)
@@ -74,12 +77,19 @@ namespace Kratos
         KRATOS_REGISTER_VARIABLE(TOPOGRAPHY_GRADIENT)
 
         // Specific variables for PFEM2
+        KRATOS_REGISTER_VARIABLE(NUMBER_OF_PARTICLES)
+        KRATOS_REGISTER_VARIABLE(SUM_AREAS)
+        KRATOS_REGISTER_VARIABLE(PARTICLE_AREA)
+        KRATOS_REGISTER_VARIABLE(PARTICLE_WEIGHT)
+        KRATOS_REGISTER_VARIABLE(SUM_PARTICLES_WEIGHTS)
+        KRATOS_REGISTER_VARIABLE(MASS_WEIGHT)
         KRATOS_REGISTER_VARIABLE(MEAN_SIZE)
         KRATOS_REGISTER_VARIABLE(MEAN_VEL_OVER_ELEM_SIZE)
         KRATOS_REGISTER_VARIABLE(PROJECTED_SCALAR1)
         KRATOS_REGISTER_VARIABLE(DELTA_SCALAR1)
         KRATOS_REGISTER_VARIABLE(PROJECTED_VECTOR1)
         KRATOS_REGISTER_VARIABLE(DELTA_VECTOR1)
+        KRATOS_REGISTER_VARIABLE(CURRENT_ELEMENT)
 
         // Variables for Flux Corrected Transport algorithm
         KRATOS_REGISTER_VARIABLE(POSITIVE_FLUX)
@@ -98,6 +108,10 @@ namespace Kratos
         KRATOS_REGISTER_3D_VARIABLE_WITH_COMPONENTS(EXACT_MOMENTUM)
         KRATOS_REGISTER_3D_VARIABLE_WITH_COMPONENTS(MOMENTUM_ERROR)
 
+        // Units conversion
+        KRATOS_REGISTER_VARIABLE(TIME_UNIT_CONVERTER)
+        KRATOS_REGISTER_VARIABLE(WATER_HEIGHT_UNIT_CONVERTER)
+
         // Registering elements and conditions here
         KRATOS_REGISTER_ELEMENT("SWE2D3N", mSWE2D3N)
         KRATOS_REGISTER_ELEMENT("SWE2D4N", mSWE2D4N)
@@ -106,6 +120,7 @@ namespace Kratos
         KRATOS_REGISTER_ELEMENT("LagrangianSWE2D4N", mLagrangianSWE2D4N)
 
         KRATOS_REGISTER_ELEMENT("ShallowWater2D3N", mShallowWater2D3N)
+        KRATOS_REGISTER_ELEMENT("MonotonicElement2D3N", mMonotonicElement2D3N)
 
         KRATOS_REGISTER_CONDITION("NothingCondition2D2N", mNothingCondition2D2N)
     }

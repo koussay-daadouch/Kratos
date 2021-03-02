@@ -108,10 +108,7 @@ class MainCouplingPfemFemDemAitken_Solution(MainCouplingPfemFemDem.MainCouplingP
             KratosPrintInfo("================================================" + "\n" +
                            " ==== SOLVING FEMDEM PART OF THE CALCULATION ====" + "\n" +
                            " ================================================")
-            if (solid_model_part.GetSubModelPart("fsi_interface_model_part").NumberOfNodes() > 2 or self.FEMDEM_Solution.FEM_Solution.step <= 4):
-                self.SolveSolutionStepFEMDEM()
-            else:
-                KratosPrintInfo("FEM-DEM not solved -> ¡No interface!")
+            self.SolveSolutionStepFEMDEM()
 
             # If there are no interface nodes yet
             if (solid_model_part.GetSubModelPart("fsi_interface_model_part").NumberOfNodes() < 2):

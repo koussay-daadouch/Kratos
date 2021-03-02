@@ -18,6 +18,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <time.h>
 #include <array>
 
 // Project includes
@@ -107,9 +108,9 @@ public:
 
   /**
    * @brief Constructs a new BinsObjectDynamic
-   *
+   * 
    * Construct a new BinsObjectDynamic using a list of objects and an automatically calculate cell size.
-   *
+   * 
    * @param ObjectsBegin Iterator to the first object of the bins
    * @param ObjectsEnd Iterator to the last object of the bins
    */
@@ -126,9 +127,9 @@ public:
 
   /**
    * @brief Constructs a new BinsObjectDynamic
-   *
+   * 
    * Constructs a new BinsObjectDynamic using a list of objects and an user provided cell size.
-   *
+   * 
    * @param ObjectsBegin Iterator to the first object of the bins
    * @param ObjectsEnd Iterator to the last object of the bins
    * @param CellSize Size of the cells (equal for every dimension)
@@ -146,11 +147,11 @@ public:
 
   /**
    * @brief Constructs a new BinsObjectDynamic
-   *
+   * 
    * Constructs a new BinsObjectDynamic using a given bounding box and a user provided cell size.
-   *
+   * 
    * @param MinPoint Min point of the boundingbox containing the bins
-   * @param MaxPoint Max point of the boundingbox containing the bins
+   * @param MaxPoint Max point of the boundingbox containing the bins 
    * @param CellSize Size of the cells (equal for very dimension)
    */
   BinsObjectDynamic (const PointType& MinPoint, const PointType& MaxPoint, CoordinateType CellSize)
@@ -167,12 +168,12 @@ public:
 
   /**
    * @brief Constructs a new BinsObjectDynamic object
-   *
+   * 
    * Constructs a new BinsObjectDynamic using a given bounding box and a provided aproximation of the number
    * of objects that will be added to the bins.
-   *
+   * 
    * @param MinPoint Min point of the boundingbox containing the bins
-   * @param MaxPoint Max point of the boundingbox containing the bins
+   * @param MaxPoint Max point of the boundingbox containing the bins 
    * @param NumPoints Expected number of elements in the bins
    */
   BinsObjectDynamic (const PointType& MinPoint, const PointType& MaxPoint, SizeType NumPoints)
@@ -441,23 +442,20 @@ public:
    * @param MaxNumberOfResults [description]
    */
   void SearchObjectsInRadius(IteratorType const& ThisObjects, SizeType const& NumberOfObjects, std::vector<double>& Radius, std::vector<std::vector<PointerType> >& Results, std::vector<SizeType>& NumberOfResults, SizeType const& MaxNumberOfResults) {
+    PointType Low, High;
+    SearchStructureType Box;
 
-    struct tls_type
-    {
-        PointType Low;
-        PointType High;
-        SearchStructureType Box;
-    };
+    #pragma omp parallel for private(Low,High,Box)
+    for(int i = 0; i < static_cast<int>(NumberOfObjects); i++) {
+      ResultIteratorType ResultsPointer            = Results[i].begin();
 
-    IndexPartition<std::size_t>(NumberOfObjects).for_each(tls_type(), [&](std::size_t i, tls_type& rTLS){
-        ResultIteratorType ResultsPointer = Results[i].begin();
-        NumberOfResults[i] = 0;
+      NumberOfResults[i] = 0;
 
-        TConfigure::CalculateBoundingBox(ThisObjects[i], rTLS.Low, rTLS.High, Radius[i]);
-        rTLS.Box.Set( CalculateCell(rTLS.Low), CalculateCell(rTLS.High), mN );
+      TConfigure::CalculateBoundingBox(ThisObjects[i], Low, High, Radius[i]);
+      Box.Set( CalculateCell(Low), CalculateCell(High), mN );
 
-        SearchInRadius(ThisObjects[i], Radius[i], ResultsPointer, NumberOfResults[i], MaxNumberOfResults, rTLS.Box );
-    });
+      SearchInRadius(ThisObjects[i], Radius[i], ResultsPointer, NumberOfResults[i], MaxNumberOfResults, Box );
+    }
   }
 
   /**
@@ -666,7 +664,7 @@ virtual void SearchObjectsInRadiusExclusive(IteratorType const& ThisObjects, Siz
 
   /**
    * @brief Get the Cell Container object
-   *
+   * 
    * @return CellContainerType& The Cell Container object
    */
   CellContainerType& GetCellContainer() {
@@ -675,7 +673,7 @@ virtual void SearchObjectsInRadiusExclusive(IteratorType const& ThisObjects, Siz
 
   /**
    * @brief Get the Divisions object
-   *
+   * 
    * @return SizeArray& Array containing the number of Cells in each dimension
    */
   SizeArray& GetDivisions() {
@@ -684,7 +682,7 @@ virtual void SearchObjectsInRadiusExclusive(IteratorType const& ThisObjects, Siz
 
   /**
    * @brief Get the Cell Size object
-   *
+   * 
    * @return CoordinateArray& Array containing the size of the Cell in each dimension
    */
   CoordinateArray& GetCellSize() {
@@ -693,7 +691,7 @@ virtual void SearchObjectsInRadiusExclusive(IteratorType const& ThisObjects, Siz
 
   /**
    * @brief Get the Min Point object
-   *
+   * 
    * @return PointType& Min point of the bins
    */
   PointType& GetMinPoint() {
@@ -702,7 +700,7 @@ virtual void SearchObjectsInRadiusExclusive(IteratorType const& ThisObjects, Siz
 
   /**
    * @brief Get the Max Point object
-   *
+   * 
    * @return PointType& Max point of the bins
    */
   PointType& GetMaxPoint() {
@@ -848,20 +846,20 @@ protected:
         }
     }
 
-    /**
+    /** 
      * @brief Calculates the cell size of the bins.
-     *
+     * 
      * Calculates the cell size of the bins using an average aproximation of the objects in the bins.
-     *
+     * 
      * @param ApproximatedSize Aproximate number of objects that will be stored in the bins
      */
-    void CalculateCellSize(std::size_t ApproximatedSize)
+    void CalculateCellSize(std::size_t ApproximatedSize) 
     {
         std::size_t average_number_of_cells = static_cast<std::size_t>(std::pow(static_cast<double>(ApproximatedSize), 1.00 / Dimension));
-
+        
         std::array<double, 3> lengths;
         double average_length = 0.00;
-
+        
         for (int i = 0; i < Dimension; i++) {
             lengths[i] = mMaxPoint[i] - mMinPoint[i];
             average_length += lengths[i];
@@ -877,7 +875,7 @@ protected:
 
         for (int i = 0; i < Dimension; i++) {
              mN[i] = static_cast<std::size_t>(lengths[i] / average_length * (double)average_number_of_cells) + 1;
-
+            
             if (mN[i] > 1) {
                 mCellSize[i] = lengths[i] / mN[i];
             } else {
@@ -890,9 +888,9 @@ protected:
 
     /**
      * @brief Assigns the cell size of the bins using the provided CellSize.
-     *
+     * 
      * Assigns the cell size of the bins using the provided CellSize.
-     *
+     * 
      * @param CellSize Desired size of the cells.
      */
     void AssignCellSize(CoordinateType CellSize)

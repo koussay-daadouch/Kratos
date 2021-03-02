@@ -31,7 +31,9 @@ void ComputeMaterialDerivativeSimplex<TDim, TNumNodes>::CalculateLocalSystem(Mat
 }
 
 template <unsigned int TDim, unsigned int TNumNodes>
-void ComputeMaterialDerivativeSimplex<TDim, TNumNodes>::EquationIdVector(EquationIdVectorType& rResult, const ProcessInfo& rCurrentProcessInfo) const {
+void ComputeMaterialDerivativeSimplex<TDim, TNumNodes>::EquationIdVector(EquationIdVectorType& rResult,
+                              ProcessInfo& rCurrentProcessInfo)
+{
 
     const unsigned int NumNodes(TDim+1), LocalSize(TDim * NumNodes);
     unsigned int LocalIndex = 0;
@@ -49,7 +51,9 @@ void ComputeMaterialDerivativeSimplex<TDim, TNumNodes>::EquationIdVector(Equatio
 }
 
 template <unsigned int TDim, unsigned int TNumNodes>
-void ComputeMaterialDerivativeSimplex<TDim, TNumNodes>::GetDofList(DofsVectorType& rElementalDofList, const ProcessInfo& rCurrentProcessInfo) const {
+void ComputeMaterialDerivativeSimplex<TDim, TNumNodes>::GetDofList(DofsVectorType& rElementalDofList,
+                        ProcessInfo& rCurrentProcessInfo)
+{
     const unsigned int NumNodes(TDim+1), LocalSize(TDim * NumNodes);
 
     if (rElementalDofList.size() != LocalSize)

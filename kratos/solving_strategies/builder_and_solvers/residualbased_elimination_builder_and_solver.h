@@ -17,11 +17,11 @@
 /* System includes */
 #include <set>
 #include <unordered_set>
-
-/* External includes */
-#ifdef KRATOS_SMP_OPENMP
+#ifdef _OPENMP
 #include <omp.h>
 #endif
+
+/* External includes */
 
 /* Project includes */
 #include "utilities/timer.h"
@@ -29,7 +29,6 @@
 #include "includes/key_hash.h"
 #include "solving_strategies/builder_and_solvers/builder_and_solver.h"
 #include "includes/model_part.h"
-#include "utilities/builtin_timer.h"
 
 namespace Kratos
 {
@@ -213,7 +212,7 @@ public:
         EquationIdVectorType equation_id;
 
         // Assemble all elements
-        const auto timer = BuiltinTimer();
+        double start_build = OpenMPUtils::GetCurrentTime();
 
         #pragma omp parallel firstprivate(LHS_Contribution, RHS_Contribution, equation_id )
         {
@@ -260,11 +259,10 @@ public:
                 }
             }
         }
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", this->GetEchoLevel() >=1) << "System build time: " << timer.ElapsedSeconds() << std::endl;
+        const double stop_build = OpenMPUtils::GetCurrentTime();
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", (this->GetEchoLevel() >=1 && rModelPart.GetCommunicator().MyPID() == 0)) << "System build time: " << stop_build - start_build << std::endl;
 
-
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", this->GetEchoLevel() > 2) << "Finished building" << std::endl;
-
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", this->GetEchoLevel() > 2 && rModelPart.GetCommunicator().MyPID() == 0) << "Finished building" << std::endl;
 
         KRATOS_CATCH("")
     }
@@ -546,14 +544,14 @@ public:
 
         KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", ( this->GetEchoLevel() == 3)) << "Before the solution of the system" << "\nSystem Matrix = " << rA << "\nUnknowns vector = " << rDx << "\nRHS vector = " << rb << std::endl;
 
-        const auto timer = BuiltinTimer();
+        const double start_solve = OpenMPUtils::GetCurrentTime();
         Timer::Start("Solve");
 
         SystemSolveWithPhysics(rA, rDx, rb, rModelPart);
 
         Timer::Stop("Solve");
-        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", this->GetEchoLevel() >=1) << "System solve time: " << timer.ElapsedSeconds() << std::endl;
-
+        const double stop_solve = OpenMPUtils::GetCurrentTime();
+        KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", (this->GetEchoLevel() >=1 && rModelPart.GetCommunicator().MyPID() == 0)) << "System solve time: " << stop_solve - start_solve << std::endl;
 
         KRATOS_INFO_IF("ResidualBasedEliminationBuilderAndSolver", ( this->GetEchoLevel() == 3)) << "After the solution of the system" << "\nSystem Matrix = " << rA << "\nUnknowns vector = " << rDx << "\nRHS vector = " << rb << std::endl;
 
@@ -689,7 +687,7 @@ public:
 
         const ProcessInfo& r_current_process_info = rModelPart.GetProcessInfo();
 
-        SizeType nthreads = ParallelUtilities::GetNumThreads();
+        SizeType nthreads = OpenMPUtils::GetNumThreads();
 
         typedef std::unordered_set < NodeType::DofType::Pointer, DofPointerHasher>  set_type;
 

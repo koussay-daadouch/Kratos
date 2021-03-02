@@ -38,6 +38,7 @@ ModelPart& RansVMSMonolithicKBasedWall2D2NSetUp(Model& rModel)
         rModelPart.AddNodalSolutionStepVariable(PRESSURE);
         rModelPart.AddNodalSolutionStepVariable(DENSITY);
         rModelPart.AddNodalSolutionStepVariable(MESH_VELOCITY);
+        rModelPart.AddNodalSolutionStepVariable(KINEMATIC_VISCOSITY);
         rModelPart.AddNodalSolutionStepVariable(ACCELERATION);
         rModelPart.AddNodalSolutionStepVariable(EXTERNAL_PRESSURE);
         rModelPart.AddNodalSolutionStepVariable(TURBULENT_KINETIC_ENERGY);
@@ -46,6 +47,7 @@ ModelPart& RansVMSMonolithicKBasedWall2D2NSetUp(Model& rModel)
     const auto set_properties = [](Properties& rProperties) {
         rProperties.SetValue(DENSITY, 2.0);
         rProperties.SetValue(DYNAMIC_VISCOSITY, 2e-2);
+        rProperties.SetValue(WALL_VON_KARMAN, 3.1);
         rProperties.SetValue(WALL_SMOOTHNESS_BETA, 4.2);
         rProperties.SetValue(RANS_LINEAR_LOG_LAW_Y_PLUS_LIMIT, 12.0);
     };
@@ -71,6 +73,9 @@ ModelPart& RansVMSMonolithicKBasedWall2D2NSetUp(Model& rModel)
     RandomFillNodalHistoricalVariable(r_model_part, ACCELERATION, 1.0, 1000.0);
     RandomFillNodalHistoricalVariable(r_model_part, EXTERNAL_PRESSURE, 1.0, 1000.0);
 
+    VariableUtils().SetVariable(KINEMATIC_VISCOSITY, 1e-2, r_model_part.Nodes());
+    VariableUtils().SetVariable(DENSITY, 2.0, r_model_part.Nodes());
+
     RandomFillContainerVariable<ModelPart::ConditionsContainerType>(
         r_model_part, NORMAL, -2.0, -1.0);
 
@@ -80,8 +85,10 @@ ModelPart& RansVMSMonolithicKBasedWall2D2NSetUp(Model& rModel)
 
     // set process info variables
     auto& r_process_info = r_model_part.GetProcessInfo();
+    r_process_info.SetValue(WALL_VON_KARMAN, 3.1);
+    r_process_info.SetValue(WALL_SMOOTHNESS_BETA, 4.2);
+    r_process_info.SetValue(RANS_LINEAR_LOG_LAW_Y_PLUS_LIMIT, 12.0);
     r_process_info.SetValue(TURBULENCE_RANS_C_MU, 0.09);
-    r_process_info.SetValue(VON_KARMAN, 3.1);
 
     return r_model_part;
 }

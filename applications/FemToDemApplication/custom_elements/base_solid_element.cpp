@@ -1274,7 +1274,91 @@ void BaseSolidElement::SetValuesOnIntegrationPoints(
 /***********************************************************************************/
 /***********************************************************************************/
 
-void BaseSolidElement::CalculateOnIntegrationPoints(
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<bool>& rVariable,
+    std::vector<bool>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<int>& rVariable,
+    std::vector<int>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<double>& rVariable,
+    std::vector<double>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<array_1d<double, 3>>& rVariable,
+    std::vector<array_1d<double, 3>>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<array_1d<double, 6>>& rVariable,
+    std::vector<array_1d<double, 6>>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<Vector>& rVariable,
+    std::vector<Vector>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
+    const Variable<Matrix>& rVariable,
+    std::vector<Matrix>& rValues,
+    const ProcessInfo& rCurrentProcessInfo
+    )
+{
+    CalculateOnIntegrationPoints( rVariable, rValues, rCurrentProcessInfo );
+}
+
+/***********************************************************************************/
+/***********************************************************************************/
+
+void BaseSolidElement::GetValueOnIntegrationPoints(
         const Variable<ConstitutiveLaw::Pointer>& rVariable,
         std::vector<ConstitutiveLaw::Pointer>& rValues,
         const ProcessInfo& rCurrentProcessInfo
@@ -1294,7 +1378,7 @@ void BaseSolidElement::CalculateOnIntegrationPoints(
 /***********************************************************************************/
 /***********************************************************************************/
 
-int  BaseSolidElement::Check( const ProcessInfo& rCurrentProcessInfo ) const
+int  BaseSolidElement::Check( const ProcessInfo& rCurrentProcessInfo )
 {
     KRATOS_TRY;
 
@@ -1302,6 +1386,14 @@ int  BaseSolidElement::Check( const ProcessInfo& rCurrentProcessInfo ) const
 
     const SizeType number_of_nodes = this->GetGeometry().size();
     const SizeType dimension = this->GetGeometry().WorkingSpaceDimension();
+
+    // Verify that the variables are correctly initialized
+    KRATOS_CHECK_VARIABLE_KEY(DISPLACEMENT)
+    KRATOS_CHECK_VARIABLE_KEY(VELOCITY)
+    KRATOS_CHECK_VARIABLE_KEY(ACCELERATION)
+    KRATOS_CHECK_VARIABLE_KEY(DENSITY)
+    KRATOS_CHECK_VARIABLE_KEY(VOLUME_ACCELERATION)
+    KRATOS_CHECK_VARIABLE_KEY(THICKNESS)
 
     // Check that the element's nodes contain all required SolutionStepData and Degrees of freedom
     for ( IndexType i = 0; i < number_of_nodes; i++ ) {

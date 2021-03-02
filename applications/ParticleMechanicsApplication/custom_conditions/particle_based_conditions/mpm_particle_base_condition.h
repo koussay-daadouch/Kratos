@@ -182,7 +182,7 @@ public:
     void CalculateLocalSystem(
         MatrixType& rLeftHandSideMatrix,
         VectorType& rRightHandSideVector,
-        const ProcessInfo& rCurrentProcessInfo
+        ProcessInfo& rCurrentProcessInfo
         ) override;
 
     /**
@@ -192,7 +192,7 @@ public:
       */
     void CalculateRightHandSide(
         VectorType& rRightHandSideVector,
-        const ProcessInfo& rCurrentProcessInfo
+        ProcessInfo& rCurrentProcessInfo
         ) override;
 
     /**
@@ -202,7 +202,7 @@ public:
       */
     void CalculateMassMatrix(
         MatrixType& rMassMatrix,
-        const ProcessInfo& rCurrentProcessInfo
+        ProcessInfo& rCurrentProcessInfo
         ) override;
 
     /**
@@ -213,7 +213,7 @@ public:
       */
     void CalculateDampingMatrix(
         MatrixType& rDampingMatrix,
-        const ProcessInfo& rCurrentProcessInfo
+        ProcessInfo& rCurrentProcessInfo
         ) override;
 
     /**
@@ -321,7 +321,7 @@ protected:
     virtual void CalculateAll(
         MatrixType& rLeftHandSideMatrix,
         VectorType& rRightHandSideVector,
-        const ProcessInfo& rCurrentProcessInfo,
+        ProcessInfo& rCurrentProcessInfo,
         const bool CalculateStiffnessMatrixFlag,
         const bool CalculateResidualVectorFlag
         );
@@ -332,10 +332,10 @@ protected:
     virtual double GetIntegrationWeight();
 
     /**
-     * Calculate Shape Function Values as a vector
+     * Calculate Shape Function Values in a given point
      */
 
-    virtual void MPMShapeFunctionPointValues(Vector& rResult) const;
+    virtual Vector& MPMShapeFunctionPointValues(Vector& rResult, const array_1d<double,3>& rPoint);
 
     /**
      * Calculation of the Current Displacement

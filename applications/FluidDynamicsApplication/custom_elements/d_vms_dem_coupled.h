@@ -214,16 +214,6 @@ protected:
 
     // Protected interface of FluidElement ////////////////////////////////////
 
-    void AlgebraicMomentumResidual(
-        const TElementData& rData,
-        const array_1d<double,3> &rConvectionVelocity,
-        array_1d<double,3>& rResidual) const override;
-
-    void MomentumProjTerm(
-        const TElementData& rData,
-        const array_1d<double,3>& rConvectionVelocity,
-        array_1d<double,3> &rMomentumRHS) const override;
-
     void AddVelocitySystem(
         TElementData& rData,
         MatrixType& rLocalLHS,
@@ -238,8 +228,8 @@ protected:
     void CalculateStabilizationParameters(
         const TElementData& rData,
         const array_1d<double,3> &Velocity,
-        BoundedMatrix<double,Dim,Dim> &TauOne,
-        double &TauTwo);
+        double &TauOne,
+        double &TauTwo) const;
 
     virtual void MassProjTerm(
         const TElementData& rData,

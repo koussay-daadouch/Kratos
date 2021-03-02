@@ -193,7 +193,7 @@ CompositeCondition::IntegrationMethod CompositeCondition::GetIntegrationMethod()
 //************************************************************************************
 //************************************************************************************
 
-void CompositeCondition::GetDofList( DofsVectorType& rConditionalDofList, const ProcessInfo& rCurrentProcessInfo ) const
+void CompositeCondition::GetDofList( DofsVectorType& rConditionalDofList, ProcessInfo& rCurrentProcessInfo )
 {
   rConditionalDofList.resize(0);
 
@@ -353,11 +353,89 @@ void CompositeCondition::SetValuesOnIntegrationPoints( const Variable<Matrix>& r
     }
 }
 
+//*********************************GET DOUBLE VALUE***********************************
+//************************************************************************************
+
+void CompositeCondition::GetValueOnIntegrationPoints( const Variable<double>& rVariable,
+                                                      std::vector<double>& rValues,
+                                                      const ProcessInfo& rCurrentProcessInfo )
+{
+
+  std::vector< double > LocalValues;
+  for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
+  {
+    cn->GetValueOnIntegrationPoints(rVariable,LocalValues,rCurrentProcessInfo);
+
+    if ( LocalValues.size() != rValues.size() )
+      rValues.resize( LocalValues.size(), false );
+
+    for(unsigned int i=0; i<LocalValues.size(); i++)
+      rValues[i] += LocalValues[i];
+  }
+
+}
+
+
+//**********************************GET VECTOR VALUE**********************************
+//************************************************************************************
+
+void CompositeCondition::GetValueOnIntegrationPoints( const Variable<Vector>& rVariable,
+							    std::vector<Vector>& rValues,
+							    const ProcessInfo& rCurrentProcessInfo )
+{
+  std::vector< Vector > LocalValues;
+  for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
+  {
+    cn->GetValueOnIntegrationPoints(rVariable,LocalValues,rCurrentProcessInfo);
+
+    if ( LocalValues.size() != rValues.size() )
+      rValues.resize(LocalValues.size());
+
+    for(unsigned int i=0; i<LocalValues.size(); i++)
+    {
+      if ( LocalValues[i].size() != rValues[i].size() )
+        rValues[i].resize( LocalValues[i].size(), false );
+    }
+
+    for(unsigned int i=0; i<LocalValues.size(); i++)
+      rValues[i] += LocalValues[i];
+
+  }
+}
+
+//***********************************GET MATRIX VALUE*********************************
+//************************************************************************************
+
+void CompositeCondition::GetValueOnIntegrationPoints( const Variable<Matrix>& rVariable,
+							 std::vector<Matrix>& rValues,
+							 const ProcessInfo& rCurrentProcessInfo )
+{
+  std::vector< Matrix > LocalValues;
+  for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
+  {
+    cn->GetValueOnIntegrationPoints(rVariable,LocalValues,rCurrentProcessInfo);
+
+    if ( LocalValues.size() != rValues.size() )
+      rValues.resize(LocalValues.size());
+
+    for(unsigned int i=0; i<LocalValues.size(); i++)
+    {
+      if ( LocalValues[i].size2() != rValues[i].size2() )
+        rValues[i].resize( LocalValues[i].size1(), LocalValues[i].size2(), false );
+    }
+
+    for(unsigned int i=0; i<LocalValues.size(); i++)
+      rValues[i] += LocalValues[i];
+  }
+}
+
+
+
 //************* STARTING - ENDING  METHODS
 //************************************************************************************
 //************************************************************************************
 
-void CompositeCondition::Initialize(const ProcessInfo& rCurrentProcessInfo)
+void CompositeCondition::Initialize()
 {
    KRATOS_TRY
 
@@ -369,7 +447,7 @@ void CompositeCondition::Initialize(const ProcessInfo& rCurrentProcessInfo)
       SetValueToChildren(MASTER_ELEMENTS);
       SetValueToChildren(MASTER_NODES);
 
-      cn->Initialize(rCurrentProcessInfo);
+      cn->Initialize();
     }
 
 
@@ -416,7 +494,7 @@ void CompositeCondition::InitializeChildren()
 //************************************************************************************
 //************************************************************************************
 
-void CompositeCondition::InitializeSolutionStep( const ProcessInfo& rCurrentProcessInfo )
+void CompositeCondition::InitializeSolutionStep( ProcessInfo& rCurrentProcessInfo )
 {
 
   for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
@@ -470,7 +548,7 @@ void CompositeCondition::InitializeSolutionStep( const ProcessInfo& rCurrentProc
 //************************************************************************************
 //************************************************************************************
 
-void CompositeCondition::InitializeNonLinearIteration( const ProcessInfo& rCurrentProcessInfo )
+void CompositeCondition::InitializeNonLinearIteration( ProcessInfo& rCurrentProcessInfo )
 {
   for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
     {
@@ -484,7 +562,7 @@ void CompositeCondition::InitializeNonLinearIteration( const ProcessInfo& rCurre
 //************************************************************************************
 //************************************************************************************
 
-void CompositeCondition::FinalizeSolutionStep( const ProcessInfo& rCurrentProcessInfo )
+void CompositeCondition::FinalizeSolutionStep( ProcessInfo& rCurrentProcessInfo )
 {
   for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
     {
@@ -516,7 +594,7 @@ void CompositeCondition::AddExplicitContribution(const VectorType& rRHS,
 //************************************************************************************
 //************************************************************************************
 
-CompositeCondition::SizeType CompositeCondition::GetDofsSize(const ProcessInfo& rCurrentProcessInfo)
+CompositeCondition::SizeType CompositeCondition::GetDofsSize(ProcessInfo& rCurrentProcessInfo)
 {
   KRATOS_TRY
 
@@ -540,7 +618,7 @@ CompositeCondition::SizeType CompositeCondition::GetDofsSize(const ProcessInfo& 
 //************************************************************************************
 
 
-void CompositeCondition::CalculateLocalSystem( MatrixType& rLeftHandSideMatrix, VectorType& rRightHandSideVector, const ProcessInfo& rCurrentProcessInfo )
+void CompositeCondition::CalculateLocalSystem( MatrixType& rLeftHandSideMatrix, VectorType& rRightHandSideVector, ProcessInfo& rCurrentProcessInfo )
 {
   KRATOS_TRY
   //std::cout<<" Calculate local system Skin "<<std::endl;
@@ -598,7 +676,7 @@ void CompositeCondition::CalculateLocalSystem( MatrixType& rLeftHandSideMatrix, 
 //************************************************************************************
 
 
-void CompositeCondition::CalculateRightHandSide( VectorType& rRightHandSideVector, const ProcessInfo& rCurrentProcessInfo )
+void CompositeCondition::CalculateRightHandSide( VectorType& rRightHandSideVector, ProcessInfo& rCurrentProcessInfo )
 {
   //std::cout<<" Calculate local rhs system Skin "<<std::endl;
 
@@ -638,7 +716,7 @@ void CompositeCondition::CalculateRightHandSide( VectorType& rRightHandSideVecto
 //************************************************************************************
 
 
-void CompositeCondition::CalculateLeftHandSide( MatrixType& rLeftHandSideMatrix, const ProcessInfo& rCurrentProcessInfo )
+void CompositeCondition::CalculateLeftHandSide( MatrixType& rLeftHandSideMatrix, ProcessInfo& rCurrentProcessInfo )
 {
 
   SizeType size = this->GetDofsSize(rCurrentProcessInfo);
@@ -684,7 +762,7 @@ void CompositeCondition::CalculateLeftHandSide( MatrixType& rLeftHandSideMatrix,
 //************************************************************************************
 //************************************************************************************
 
-void CompositeCondition::CalculateMassMatrix(MatrixType& rMassMatrix, const ProcessInfo& rCurrentProcessInfo)
+void CompositeCondition::CalculateMassMatrix(MatrixType& rMassMatrix, ProcessInfo& rCurrentProcessInfo)
 {
   rMassMatrix.clear();
   rMassMatrix.resize(0,0,false);
@@ -695,7 +773,7 @@ void CompositeCondition::CalculateMassMatrix(MatrixType& rMassMatrix, const Proc
 //************************************************************************************
 
 
-void CompositeCondition::CalculateDampingMatrix(MatrixType& rDampingMatrix, const ProcessInfo& rCurrentProcessInfo)
+void CompositeCondition::CalculateDampingMatrix(MatrixType& rDampingMatrix, ProcessInfo& rCurrentProcessInfo)
 {
   rDampingMatrix.clear();
   rDampingMatrix.resize(0,0,false);
@@ -802,11 +880,11 @@ void CompositeCondition::Calculate( const Variable<double>& rVariable, double& r
  * or that no common error is found.
  * @param rCurrentProcessInfo
  */
-int  CompositeCondition::Check( const ProcessInfo& rCurrentProcessInfo ) const
+int  CompositeCondition::Check( const ProcessInfo& rCurrentProcessInfo )
 {
   int check = 1;
   int child_check = 1;
-  for (auto cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
+  for (ConditionIterator cn = mChildConditions.begin() ; cn != mChildConditions.end(); ++cn)
   {
     child_check = cn->Check(rCurrentProcessInfo);
     if(child_check == 0)

@@ -1,7 +1,8 @@
+from __future__ import print_function, absolute_import, division
+
 # import Kratos
 from KratosMultiphysics import *
-if not IsDistributedRun():
-    raise Exception("This test script can only be executed in MPI!")
+from KratosMultiphysics.TrilinosApplication import *
 
 
 # Import Kratos "wrapper" for unittests
@@ -31,13 +32,7 @@ def AssembleTestSuites():
 
     # Create a test suite with the selected tests (Small tests):
     smallSuite = suites['mpi_small']
-    # linear solver tests
-    smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_linear_solvers.TestAmesosLinearSolvers]))
-    smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_linear_solvers.TestAmesos2LinearSolvers]))
-    smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_linear_solvers.TestAztecLinearSolvers]))
-    smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_linear_solvers.TestMLLinearSolvers]))
-    smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_linear_solvers.TestAMGCLMPILinearSolvers]))
-
+    smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_linear_solvers.TestLinearSolvers]))
     smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_matrix.TestTrilinosMatrix]))
     smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_redistance.TestTrilinosRedistance]))
     smallSuite.addTests(KratosUnittest.TestLoader().loadTestsFromTestCases([test_trilinos_levelset_convection.TestTrilinosLevelSetConvection]))

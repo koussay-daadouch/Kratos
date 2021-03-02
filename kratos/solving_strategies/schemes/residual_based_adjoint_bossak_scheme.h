@@ -154,7 +154,7 @@ public:
         BaseType::Initialize(rModelPart);
 
         // Allocate auxiliary memory.
-        int num_threads = ParallelUtilities::GetNumThreads();
+        int num_threads = OpenMPUtils::GetNumThreads();
         mLeftHandSide.resize(num_threads);
         mResponseGradient.resize(num_threads);
         mFirstDerivsLHS.resize(num_threads);
@@ -1245,7 +1245,7 @@ private:
         std::function<void(const AdjointExtensions&, std::vector<const VariableData*>&)> GetLocalVars)
     {
         KRATOS_TRY;
-        const int num_threads = ParallelUtilities::GetNumThreads();
+        const int num_threads = OpenMPUtils::GetNumThreads();
         std::vector<const VariableData*> local_vars;
         std::vector<std::unordered_set<const VariableData*, Hash, Pred>> thread_vars(num_threads);
 #pragma omp parallel for private(local_vars)

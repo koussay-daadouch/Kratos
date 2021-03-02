@@ -21,17 +21,21 @@
 namespace Kratos
 {
 
-ParallelFillCommunicator::ParallelFillCommunicator(ModelPart& rModelPart)
-    : FillCommunicator(rModelPart)
+ParallelFillCommunicator::ParallelFillCommunicator(ModelPart& r_model_part)
+    : mrBaseModelPart(r_model_part)
 {}
 
 void ParallelFillCommunicator::Execute()
 {
     KRATOS_TRY
     mPartitionIndexCheckPerformed = false;
-    auto& r_base_model_part = GetBaseModelPart();
-    ComputeCommunicationPlan(r_base_model_part);
+    ComputeCommunicationPlan(mrBaseModelPart);
     KRATOS_CATCH("");
+}
+
+void ParallelFillCommunicator::PrintDebugInfo()
+{
+    PrintModelPartDebugInfo(mrBaseModelPart);
 }
 
 void ParallelFillCommunicator::PrintModelPartDebugInfo(const ModelPart& rModelPart)
@@ -475,8 +479,6 @@ void ParallelFillCommunicator::GenerateMeshes(int NeighbourPID, int MyPID, unsig
     ModelPart::NodesContainerType& r_local_nodes =
         rModelPart.GetCommunicator().LocalMesh(Color).Nodes();
     r_local_nodes.clear();
-
-
     for (int id : ids_to_send)
     {
         KRATOS_DEBUG_ERROR_IF(rModelPart.Nodes().find(id) == rModelPart.Nodes().end()) << "Trying to add Node with Id #" << id << " to the local mesh, but the node does not exist in the ModelPart!" << std::endl;

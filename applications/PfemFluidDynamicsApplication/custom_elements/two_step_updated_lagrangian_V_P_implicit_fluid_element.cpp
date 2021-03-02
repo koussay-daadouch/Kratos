@@ -37,7 +37,7 @@ namespace Kratos
   }
 
   template <unsigned int TDim>
-  void TwoStepUpdatedLagrangianVPImplicitFluidElement<TDim>::Initialize(const ProcessInfo& rCurrentProcessInfo)
+  void TwoStepUpdatedLagrangianVPImplicitFluidElement<TDim>::Initialize()
   {
     KRATOS_TRY;
 
@@ -1198,6 +1198,10 @@ namespace Kratos
     constitutive_law_values.SetStressVector(rElementalVariables.UpdatedDeviatoricCauchyStress);
     constitutive_law_values.SetConstitutiveMatrix(rElementalVariables.ConstitutiveMatrix);
 
+    // Temporary workaround, to be updated
+    auto r_geometry = this->GetGeometry();
+    r_geometry[0].SetValue(THETA_MOMENTUM, 0.5);
+
     mpConstitutiveLaw->CalculateMaterialResponseCauchy(constitutive_law_values);
 
     rElementalVariables.UpdatedTotalCauchyStress[0] =
@@ -1265,6 +1269,10 @@ namespace Kratos
     constitutive_law_values.SetStrainVector(rElementalVariables.SpatialDefRate);
     constitutive_law_values.SetStressVector(rElementalVariables.UpdatedDeviatoricCauchyStress);
     constitutive_law_values.SetConstitutiveMatrix(rElementalVariables.ConstitutiveMatrix);
+
+    // Temporary workaround, to be updated
+    auto r_geometry = this->GetGeometry();
+    r_geometry[0].SetValue(THETA_MOMENTUM, 0.5);
 
     mpConstitutiveLaw->CalculateMaterialResponseCauchy(constitutive_law_values);
 

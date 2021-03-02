@@ -18,9 +18,12 @@
 // External includes
 
 // Project includes
-#include "shallow_water_application_variables.h"
-#include "custom_utilities/flow_rate_slip_utility.h"
+#include "includes/checks.h"
+#include "utilities/parallel_utilities.h"
+#include "utilities/time_discretization.h"
 #include "solving_strategies/schemes/residual_based_bdf_scheme.h"
+#include "custom_utilities/flow_rate_slip_utility.h"
+#include "shallow_water_application_variables.h"
 
 namespace Kratos
 {

@@ -44,10 +44,6 @@ def Factory(settings, Model):
             KratosRANS.RansWallDistanceCalculationProcess
         ],
         [
-            "NutNodalUpdateProcess",
-            KratosRANS.RansNutNodalUpdateProcess
-        ],
-        [
             "NutKEpsilonUpdateProcess",
             KratosRANS.RansNutKEpsilonUpdateProcess
         ],

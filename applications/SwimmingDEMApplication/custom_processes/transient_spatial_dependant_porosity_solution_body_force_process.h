@@ -131,12 +131,6 @@ public:
 
     void SetBodyForceAndPorosityField();
 
-    bool IsInsideEllipticalSupport(
-        const double x1,
-        const double x2,
-        const double c,
-        const double R);
-
     ///@}
     ///@name Access
     ///@{

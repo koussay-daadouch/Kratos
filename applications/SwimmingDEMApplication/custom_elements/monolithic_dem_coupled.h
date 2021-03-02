@@ -301,7 +301,8 @@ public:
      * @param rLeftHandSideMatrix Local matrix, will be filled with zeros
      * @param rCurrentProcessInfo Process info instance
      */
-    virtual void CalculateLeftHandSide(MatrixType& rLeftHandSideMatrix, const ProcessInfo& rCurrentProcessInfo) override
+    virtual void CalculateLeftHandSide(MatrixType& rLeftHandSideMatrix,
+                                       ProcessInfo& rCurrentProcessInfo) override
     {
         if (rCurrentProcessInfo[FRACTIONAL_STEP] == 1) {
 
@@ -575,7 +576,7 @@ public:
      */
     virtual void CalculateLocalVelocityContribution(MatrixType& rDampingMatrix,
             VectorType& rRightHandSideVector,
-            const ProcessInfo& rCurrentProcessInfo) override
+            ProcessInfo& rCurrentProcessInfo) override
     {
         const unsigned int LocalSize = (TDim + 1) * TNumNodes;
 
@@ -704,7 +705,8 @@ public:
 //             }
     }
 
-    void FinalizeSolutionStep(const ProcessInfo &rCurrentProcessInfo) override {
+    void FinalizeSolutionStep(ProcessInfo &rCurrentProcessInfo) override
+    {
         for(unsigned int iNode = 0; iNode < TNumNodes; ++iNode)
         {
             this->GetGeometry()[iNode].SetLock();
@@ -949,14 +951,16 @@ public:
      * @param rResult A vector containing the global Id of each row
      * @param rCurrentProcessInfo the current process info object (unused)
      */
-    virtual void EquationIdVector(EquationIdVectorType& rResult, const ProcessInfo& rCurrentProcessInfo) const override;
+    virtual void EquationIdVector(EquationIdVectorType& rResult,
+                                  ProcessInfo& rCurrentProcessInfo) override;
 
     /// Returns a list of the element's Dofs
     /**
      * @param ElementalDofList the list of DOFs
      * @param rCurrentProcessInfo the current process info instance
      */
-    virtual void GetDofList(DofsVectorType& rElementalDofList, const ProcessInfo& rCurrentProcessInfo) const override;
+    virtual void GetDofList(DofsVectorType& rElementalDofList,
+                            ProcessInfo& rCurrentProcessInfo) override;
 
     /// Returns VELOCITY_X, VELOCITY_Y, (VELOCITY_Z,) PRESSURE for each node
     /**

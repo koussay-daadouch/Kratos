@@ -99,7 +99,7 @@ public:
         :BaseType()
     {
         // Allocate auxiliary memory
-        const std::size_t num_threads = ParallelUtilities::GetNumThreads();
+        const std::size_t num_threads = OpenMPUtils::GetNumThreads();
 
         mMatrix.M.resize(num_threads);
         mMatrix.D.resize(num_threads);

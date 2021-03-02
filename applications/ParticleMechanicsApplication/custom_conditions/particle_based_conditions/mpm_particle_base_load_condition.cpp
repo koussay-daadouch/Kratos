@@ -32,15 +32,20 @@ namespace Kratos
      * Shape function values in given point. This method calculate the shape function
      * vector in given point.
      *
+     * @param rPoint point which shape function values have to
+     * be calculated in it.
+     *
+     * @return Vector of double which is shape function vector \f$ N \f$ in given point.
+     *
     */
-    void MPMParticleBaseLoadCondition::MPMShapeFunctionPointValues( Vector& rResult) const
+    Vector& MPMParticleBaseLoadCondition::MPMShapeFunctionPointValues( Vector& rResult, const array_1d<double,3>& rPoint )
     {
         KRATOS_TRY
 
-        MPMParticleBaseCondition::MPMShapeFunctionPointValues(rResult);
+        rResult = MPMParticleBaseCondition::MPMShapeFunctionPointValues(rResult, rPoint);
 
         // Additional check to eliminate loss of point load quantity
-        const GeometryType& r_geometry = GetGeometry();
+        GeometryType& r_geometry = GetGeometry();
         const unsigned int number_of_nodes = GetGeometry().PointsNumber();
 
         double denominator = 1.0;
@@ -53,6 +58,8 @@ namespace Kratos
         }
 
         rResult = rResult/denominator;
+
+        return rResult;
 
         KRATOS_CATCH( "" )
     }

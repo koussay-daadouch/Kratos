@@ -68,7 +68,7 @@ namespace Kratos
   }
 
   template <unsigned int TDim>
-  void TwoStepUpdatedLagrangianVPImplicitNodallyIntegratedSolidElement<TDim>::Initialize(const ProcessInfo& rCurrentProcessInfo)
+  void TwoStepUpdatedLagrangianVPImplicitNodallyIntegratedSolidElement<TDim>::Initialize()
   {
     KRATOS_TRY;
 

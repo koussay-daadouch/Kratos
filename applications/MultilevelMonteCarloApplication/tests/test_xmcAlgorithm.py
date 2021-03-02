@@ -10,13 +10,8 @@ from xmc.distributedEnvironmentFramework import get_value_from_remote
 
 def kratosFound():
     try:
-        from KratosMultiphysics.kratos_utilities import CheckIfApplicationsAvailable
-        return CheckIfApplicationsAvailable(
-            "ConvectionDiffusionApplication",
-            "LinearSolversApplication",
-            "MeshingApplication",
-            "MultilevelMonteCarloApplication",
-        )
+        import KratosMultiphysics
+        return True
     except ImportError:
         return False
 

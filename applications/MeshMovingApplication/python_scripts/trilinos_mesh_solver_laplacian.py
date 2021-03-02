@@ -2,7 +2,7 @@
 import KratosMultiphysics
 
 # Import applications
-from KratosMultiphysics.MeshMovingApplication import TrilinosExtension as TrilinosMeshMoving
+import KratosMultiphysics.TrilinosApplication as TrilinosApplication
 
 # Import baseclass
 from KratosMultiphysics.MeshMovingApplication.trilinos_mesh_solver_base import TrilinosMeshSolverBase
@@ -34,7 +34,7 @@ class TrilinosMeshSolverLaplacian(TrilinosMeshSolverBase):
         reform_dofs_each_step = self.settings["reform_dofs_each_step"].GetBool()
         compute_reactions = self.settings["compute_reactions"].GetBool()
         communicator = self.get_communicator()
-        solving_strategy = TrilinosMeshMoving.TrilinosLaplacianMeshMovingStrategy(
+        solving_strategy = TrilinosApplication.TrilinosLaplacianMeshMovingStrategy(
             communicator,
             self.mesh_model_part,
             linear_solver,

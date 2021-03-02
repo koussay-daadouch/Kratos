@@ -12,73 +12,45 @@ class TurbulenceModellingTestCase(UnitTest.TestCase):
         cls.print_output = print_output
         cls.parameters = {}
 
-    def testVMSAfcTkeSteady(self):
+    def testAfcTkeSteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "algebraic_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
         self.parameters["<TIME_SCHEME_TYPE>"] = "steady"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSAfcVelocitySteady(self):
+    def testAfcVelocitySteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "algebraic_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "velocity_based"
         self.parameters["<TIME_SCHEME_TYPE>"] = "steady"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSRfcTkeSteady(self):
+    def testRfcTkeSteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
         self.parameters["<TIME_SCHEME_TYPE>"] = "steady"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSRfcVelocitySteady(self):
+    def testRfcVelocitySteady(self):
         self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "velocity_based"
         self.parameters["<TIME_SCHEME_TYPE>"] = "steady"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSRfcTkeTransient(self):
+    def testRfcTkeTransient(self):
         self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
         self.parameters["<TIME_SCHEME_TYPE>"] = self.transient_scheme_type
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
 
         self._runTest()
 
-    def testVMSRfcVelocityTransient(self):
+    def testRfcVelocityTransient(self):
         self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
         self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "velocity_based"
         self.parameters["<TIME_SCHEME_TYPE>"] = self.transient_scheme_type
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "vms"
-
-        self._runTest()
-
-    def testQSVMSRfcVelocitySteady(self):
-        if (self.transient_scheme_type == "bdf2"):
-            self.skipTest("Skipping since QSVMS is not supported with FractionalStep")
-
-        self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
-        self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
-        self.parameters["<TIME_SCHEME_TYPE>"] = "steady"
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "qsvms"
-
-        self._runTest()
-
-    def testQSVMSRfcVelocityTransient(self):
-        if (self.transient_scheme_type == "bdf2"):
-            self.skipTest("Skipping since QSVMS is not supported with FractionalStep")
-
-        self.parameters["<STABILIZATION_METHOD>"] = "residual_based_flux_corrected"
-        self.parameters["<WALL_FRICTION_VELOCITY_CALCULATION_METHOD>"] = "turbulent_kinetic_energy_based"
-        self.parameters["<TIME_SCHEME_TYPE>"] = self.transient_scheme_type
-        self.parameters["<FLOW_SOLVER_FORMULATION>"] = "qsvms"
 
         self._runTest()
 

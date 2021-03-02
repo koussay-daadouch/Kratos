@@ -12,14 +12,13 @@
 //
 
 // System includes
-
 // External includes
 
 // Project includes
+#include "utilities/openmp_utils.h"
 #include "processes/apply_periodic_boundary_condition_process.h"
 #include "utilities/binbased_fast_point_locator_conditions.h"
 #include "utilities/geometrical_transformation_utilities.h"
-#include "utilities/builtin_timer.h"
 
 namespace Kratos
 {
@@ -146,7 +145,7 @@ void ApplyPeriodicConditionProcess::PrintInfo(std::ostream& rOStream) const
 template <int TDim>
 void ApplyPeriodicConditionProcess::ApplyConstraintsForPeriodicConditions()
 {
-    const auto timer = BuiltinTimer();
+    const double start_apply = OpenMPUtils::GetCurrentTime();
     const int num_vars = mParameters["variable_names"].size();
     BinBasedFastPointLocatorConditions<TDim> bin_based_point_locator(mrMasterModelPart);
     bin_based_point_locator.UpdateSearchDatabase();
@@ -186,7 +185,8 @@ void ApplyPeriodicConditionProcess::ApplyConstraintsForPeriodicConditions()
         }
     }
     KRATOS_WARNING_IF("ApplyPeriodicConditionProcess",num_slaves_found != mrSlaveModelPart.NumberOfNodes())<<"Periodic condition cannot be applied for all the nodes."<<std::endl;
-    KRATOS_INFO("ApplyPeriodicConditionProcess")<<"Applying periodic boundary conditions took : "<< timer.ElapsedSeconds() <<" seconds." <<std::endl;
+    const double end_apply = OpenMPUtils::GetCurrentTime();
+    KRATOS_INFO("ApplyPeriodicConditionProcess")<<"Applying periodic boundary conditions took : "<<end_apply - start_apply<<" seconds." <<std::endl;
 }
 
 template <int TDim>

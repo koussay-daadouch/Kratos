@@ -19,7 +19,6 @@
 
 // Project includes
 #include "includes/define.h"
-#include "includes/fill_communicator.h"
 
 namespace Kratos
 {
@@ -50,7 +49,7 @@ class ModelPart;
  * and to fill the communication plan (coloring) so to allow the communication to be performed correctly
  * It fills the Ghost and Local lists and performs the coloring, then it updates the MPI communicator
  */
-class KRATOS_API(KRATOS_MPI_CORE) ParallelFillCommunicator : public FillCommunicator
+class KRATOS_API(KRATOS_MPI_CORE) ParallelFillCommunicator
 {
 public:
     ///@name Type Definitions
@@ -64,7 +63,7 @@ public:
     ///@{
 
     /// Constructor.
-    ParallelFillCommunicator(ModelPart& rModelPart);
+    ParallelFillCommunicator(ModelPart& r_model_part);
 
     /// Destructor.
     virtual ~ParallelFillCommunicator() = default;
@@ -78,9 +77,15 @@ public:
     ///@name Operations
     ///@{
 
-    void Execute() override;
+    void Execute();
 
-    void PrintModelPartDebugInfo(const ModelPart& rModelPart) override;
+    ///Function to print DETAILED mesh information.
+    /** WARNING: to be used for debugging only as many informations
+     *  are plotted
+     */
+    void PrintDebugInfo();
+
+    void PrintModelPartDebugInfo(const ModelPart& rModelPart);
 
     ///@}
     ///@name Access
@@ -97,13 +102,13 @@ public:
     ///@{
 
     /// Turn back information as a string.
-    std::string Info() const override;
+    virtual std::string Info() const;
 
     /// Print information about this object.
-    void PrintInfo(std::ostream& rOStream) const override;
+    virtual void PrintInfo(std::ostream& rOStream) const;
 
     /// Print object's data.
-    void PrintData(std::ostream& rOStream) const override;
+    virtual void PrintData(std::ostream& rOStream) const;
 
     ///@}
     ///@name Friends
@@ -111,6 +116,7 @@ public:
 
 
     ///@}
+
 protected:
     ///@name Protected static Member Variables
     ///@{
@@ -164,6 +170,8 @@ private:
     ///@}
     ///@name Member Variables
     ///@{
+
+    ModelPart& mrBaseModelPart;
 
     bool mPartitionIndexCheckPerformed = false;
 

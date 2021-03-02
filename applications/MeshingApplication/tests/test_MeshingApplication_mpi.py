@@ -36,6 +36,9 @@ def AssembleTestSuites():
     allMPISuite = suites['mpi_all']
     allMPISuite.addTests(nightlyMPISuite) # already contains the smallMPISuite
 
+    allSuite = suites['all']
+    allSuite.addTests(allMPISuite)
+
     return suites
 
 

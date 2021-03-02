@@ -72,7 +72,9 @@ void ComputeVelocityLaplacianComponentSimplex<TDim, TNumNodes>::CalculateLocalSy
 //}
 
 template <unsigned int TDim, unsigned int TNumNodes>
-void ComputeVelocityLaplacianComponentSimplex<TDim, TNumNodes>::EquationIdVector(EquationIdVectorType& rResult, const ProcessInfo& rCurrentProcessInfo) const {
+void ComputeVelocityLaplacianComponentSimplex<TDim, TNumNodes>::EquationIdVector(EquationIdVectorType& rResult,
+                              ProcessInfo& rCurrentProcessInfo)
+{
     if (rResult.size() != TNumNodes)
         rResult.resize(TNumNodes, false);
 
@@ -83,7 +85,9 @@ void ComputeVelocityLaplacianComponentSimplex<TDim, TNumNodes>::EquationIdVector
 }
 
 template <unsigned int TDim, unsigned int TNumNodes>
-void ComputeVelocityLaplacianComponentSimplex<TDim, TNumNodes>::GetDofList(DofsVectorType& rElementalDofList, const ProcessInfo& rCurrentProcessInfo) const {
+void ComputeVelocityLaplacianComponentSimplex<TDim, TNumNodes>::GetDofList(DofsVectorType& rElementalDofList,
+                        ProcessInfo& rCurrentProcessInfo)
+{
     if (rElementalDofList.size() != TNumNodes)
         rElementalDofList.resize(TNumNodes);
 

@@ -44,7 +44,6 @@ public:
 
 using NodalScalarData = typename FluidElementData<TDim,TNumNodes, false>::NodalScalarData;
 using NodalVectorData = typename FluidElementData<TDim,TNumNodes, false>::NodalVectorData;
-using NodalTensorData = typename FluidElementData<TDim,TNumNodes, false>::NodalTensorData;
 
 ///@}
 ///@name Public Members
@@ -57,8 +56,6 @@ NodalScalarData MassSource;
 NodalVectorData FluidFractionGradient;
 NodalVectorData Acceleration;
 NodalVectorData BodyForce;
-
-NodalTensorData Permeability;
 
 double ElementSize;
 
@@ -76,7 +73,6 @@ void Initialize(
     this->FillFromHistoricalNodalData(FluidFraction, FLUID_FRACTION, r_geometry);
     this->FillFromHistoricalNodalData(FluidFractionRate, FLUID_FRACTION_RATE, r_geometry);
     this->FillFromHistoricalNodalData(FluidFractionGradient, FLUID_FRACTION_GRADIENT, r_geometry);
-    this->FillFromHistoricalNodalData(Permeability, PERMEABILITY, r_geometry);
     this->FillFromHistoricalNodalData(MassSource, MASS_SOURCE, r_geometry);
     this->FillFromHistoricalNodalData(Acceleration, ACCELERATION, r_geometry);
     this->FillFromHistoricalNodalData(BodyForce,BODY_FORCE,r_geometry);
@@ -85,6 +81,7 @@ void Initialize(
 }
 
 ///@}
+
 };
 
 ///@}

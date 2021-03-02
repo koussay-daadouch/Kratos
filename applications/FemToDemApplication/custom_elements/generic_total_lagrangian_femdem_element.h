@@ -395,6 +395,11 @@ protected:
 
     std::size_t GetStrainSize() const;
 
+    void GetValueOnIntegrationPoints(
+        const Variable<double> &rVariable,
+        std::vector<double> &rValues,
+        const ProcessInfo &rCurrentProcessInfo) override;
+
     void SetValuesOnIntegrationPoints(
         const Variable<double> &rVariable,
         std::vector<double> &rValues,

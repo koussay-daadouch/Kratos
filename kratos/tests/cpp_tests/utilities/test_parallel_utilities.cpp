@@ -10,17 +10,12 @@
 //  Main authors:    Riccardo Rossi
 //                   Philipp Bucher
 
-// System includes
 #include <utility>
 #include <numeric>
 #include <iostream>
-
-// External includes
-
-// Project includes
 #include "testing/testing.h"
 #include "utilities/parallel_utilities.h"
-#include "utilities/builtin_timer.h"
+#include "utilities/openmp_utils.h"
 
 namespace Kratos {
 namespace Testing {
@@ -358,21 +353,23 @@ KRATOS_TEST_CASE_IN_SUITE(OmpVsPureC11, KratosCoreFastSuite)
         );
 
     //benchmark openmp vs pure c++11 impementation in a simple loop
-    const auto timer_omp = BuiltinTimer();
+    double start_omp = OpenMPUtils::GetCurrentTime();
     IndexPartition<unsigned int>(nsize).for_each(
             [&](unsigned int i){
                     output[i] = std::pow(data_vector[i],0.01);
                 }
             );
-    std::cout << "OMP time = " << timer_omp.ElapsedSeconds() << std::endl;
+    double stop_omp = OpenMPUtils::GetCurrentTime();
+    std::cout << "omp time = " << stop_omp-start_omp << std::endl;
 
-    const auto timer_pure = BuiltinTimer();
+    double start_pure= OpenMPUtils::GetCurrentTime();
     IndexPartition<unsigned int>(nsize).for_pure_c11(
             [&](unsigned int i){
                     output[i] = std::pow(data_vector[i],0.01);
                 }
             );
-    std::cout << "Pure c++11 time = " << timer_pure.ElapsedSeconds() << std::endl;
+    double stop_pure = OpenMPUtils::GetCurrentTime();
+    std::cout << "pure c++11 time = " << stop_pure-start_pure << std::endl;
 
 
 

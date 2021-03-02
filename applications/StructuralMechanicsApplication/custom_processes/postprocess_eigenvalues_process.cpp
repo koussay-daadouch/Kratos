@@ -207,6 +207,12 @@ void PostprocessEigenvaluesProcess::ExecuteFinalizeSolutionStep()
                 }
             }
 
+            // Reconstruct the animation on slave-dofs
+            if (mrModelPart.NumberOfMasterSlaveConstraints() > 0) {
+                ConstraintUtilities::ResetSlaveDofs(mrModelPart);
+                ConstraintUtilities::ApplyConstraints(mrModelPart);
+            }
+
             p_eigen_io_wrapper->PrintOutput(label, i, requested_double_results, requested_vector_results);
         }
     }
